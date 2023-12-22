@@ -12,7 +12,17 @@ jobs:
           echo A comment on PR $NUMBER
         env:
           NUMBER: ${{ github.event.issue.number }}
-          EVENT: ${{ github.event.issue }}
+      - name: test
+        if: contains(github.event.comment.body, '/test')
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
 # on:
 #   # pull_request:
 #   issue_comment:
@@ -30,14 +40,3 @@ jobs:
 #         if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
 #         run: |
 #           echo say hello
-#       - name: test
-#         if: contains(github.event.comment.body, '/test')
-#         uses: actions/github-script@v6
-#         with:
-#           script: |
-#             github.rest.issues.createComment({
-#               issue_number: context.issue.number,
-#               owner: context.repo.owner,
-#               repo: context.repo.repo,
-#               body: '👋 Thanks for reporting!'
-#             })
