@@ -1,8 +1,11 @@
 name: command
 on:
   pull_request:
+  issue_comment:                                     
+    types: [created, edited, deleted]
 jobs:
   job01:
+    if: ${{ github.event.issue.pull_request }}
     runs-on: [ubuntu-latest]
     steps:
       - name: say hello
