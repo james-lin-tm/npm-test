@@ -1,6 +1,5 @@
 name: command
 on:
-  pull_request:
   issue_comment:                                     
     types: [created, edited, deleted]
 jobs:
