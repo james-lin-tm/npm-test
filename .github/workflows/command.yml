@@ -12,7 +12,6 @@ jobs:
           echo A comment on PR $NUMBER
         env:
           NUMBER: ${{ github.event.issue.number }}
-          EVENT: ${{ github.event.issue }}
       - name: test
         if: contains(github.event.comment.body, '/test')
         uses: actions/github-script@v6
