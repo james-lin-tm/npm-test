@@ -9,7 +9,9 @@ jobs:
     steps:
       - name: debug
         run: |
-          echo ${{ github.event.issue.pull_request }}
+          echo $EVENT | python -m json.tool
+        env:
+          EVENT: ${{ github.event }}
       - name: say hello
         if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
         run: |
