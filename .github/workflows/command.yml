@@ -13,7 +13,9 @@ jobs:
       - name: get workbench version info
         id: get_workbench_version_info
         run: |
-          read -r _ workbench_version workbench_fed_version <<< "${COMMENT#/test }"
+          params=(${my_string#/test})
+          workbench_version=${params[0]}
+          workbench_fed_version=${params[1]}
           echo "workbench_version=$workbench_version" >> $GITHUB_OUTPUT
           echo "workbench_fed_version=$workbench_fed_version" >> $GITHUB_OUTPUT
         env:
@@ -37,7 +39,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks ya for reporting! will run ${{env.WORKBENCH_VERSION}} and fed: ${{env.WORKBENCH_FED_VERSION}}'
+              body: '👋 Thanks for reporting! will run ${{env.WORKBENCH_VERSION}} and fed: ${{env.WORKBENCH_FED_VERSION}}'
             })
 # on:
 #   # pull_request:
