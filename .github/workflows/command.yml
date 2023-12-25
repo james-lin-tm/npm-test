@@ -37,7 +37,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks ya for reporting! will run ${{env.WORKBENCH_VERSION}} and fed: ${{env.WORKBENCH_FED_VERSION}}'
+              body: '👋 Thanks for reporting! will run ${{env.WORKBENCH_VERSION}} and fed: ${{env.WORKBENCH_FED_VERSION}}'
             })
 # on:
 #   # pull_request:
