@@ -13,7 +13,7 @@ jobs:
       - name: get workbench version info
         id: get_workbench_version_info
         run: |
-          params=(${my_string#/test})
+          params=(${COMMENT#/test})
           workbench_version=${params[0]}
           workbench_fed_version=${params[1]}
           echo "workbench_version=$workbench_version" >> $GITHUB_OUTPUT
@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: report
         if: contains(github.event.comment.body, '/test')
-        uses: actions/github-script@v7
+        uses: actions/github-script@v6
         with:
           script: |
             github.rest.issues.createComment({
