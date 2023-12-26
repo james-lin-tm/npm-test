@@ -1,5 +1,5 @@
 name: pr
-run-name: pr by @${{ github.actor }}
+run-name: ${{ github.event_name=='workflow_dispatch' && format('Manually build feature branch {0}', github.event.inputs.pull_request_id) || '' }}
 on:
   pull_request:
   workflow_dispatch:
