@@ -15,7 +15,7 @@ jobs:
     name: PR comment
     runs-on: ubuntu-latest
     env:
-      TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}
+      TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
     steps:
       - name: report
         if: contains(github.event.comment.body, '/test')
