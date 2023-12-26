@@ -18,6 +18,7 @@ jobs:
       TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
     steps:
       - name: report
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
           script: |
