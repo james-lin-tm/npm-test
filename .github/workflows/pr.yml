@@ -1,0 +1,47 @@
+name: pr
+run-name: pr by @${{ github.actor }}
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      pull_request_id:
+        description: The pull request id that you want to test
+        required: true
+        type: string
+
+jobs:
+  pr_commented:
+    # This job only runs for pull request comments
+    name: PR comment
+    runs-on: ubuntu-latest
+    env:
+      TEXT: ${{ github.event.inputs.pull_request_id }}
+    steps:
+      - name: report
+        if: contains(github.event.comment.body, '/test')
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting! will run ${{env.TEXT}}'
+            })
+# on:
+#   # pull_request:
+#   issue_comment:
+# jobs:
+#   pr_commented:
+#     # if: ${{ github.event.issue.pull_request }}
+#     runs-on: [ubuntu-latest]
+#     steps:
+#       - name: debug
+#         run: |
+#           echo hello world
+#         env:
+#           EVENT: ${{ github.event.issue }}
+#       - name: say hello
+#         if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
+#         run: |
+#           echo say hello
