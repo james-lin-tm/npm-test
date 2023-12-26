@@ -1,5 +1,5 @@
 name: pr
-run-name: pr by @${{ github.actor }}
+run-name: ${{ github.event_name=='workflow_dispatch' && format('Manually build feature branch {0}', github.event.inputs.pull_request_id) || '' }}
 on:
   pull_request:
   workflow_dispatch:
@@ -15,10 +15,10 @@ jobs:
     name: PR comment
     runs-on: ubuntu-latest
     env:
-      TEXT: ${{ github.event.inputs.pull_request_id }}
+      TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
     steps:
       - name: report
-        if: contains(github.event.comment.body, '/test')
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
           script: |
