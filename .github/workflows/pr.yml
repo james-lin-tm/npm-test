@@ -18,7 +18,6 @@ jobs:
       TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
     steps:
       - name: report
-        if: contains(github.event.comment.body, '/test')
         uses: actions/github-script@v6
         with:
           script: |
