@@ -18,12 +18,14 @@ jobs:
       status: ${{ github.event.review.state }}
       ref: ${{ github.head_ref }}
       event: ${{ github.event_name }}
+      id: $${{github.event.number}}
     steps:
       - name: debug
         run: |
           echo "status: ${status}"
           echo "ref: ${ref}"
           echo "event: ${event}"
+          echo "id: ${id}"
 
   pr_commented:
     # This job only runs for pull request comments
