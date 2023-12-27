@@ -9,7 +9,10 @@ on:
       pull_request_id:
         description: The pull request id that you want to test
         type: string
-
+      continueOnTagErr:
+        type: boolean
+        required: false
+        default: false
 jobs:
   debug:
     name: deubg
