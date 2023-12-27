@@ -2,9 +2,6 @@ name: pr
 run-name: ${{ github.event_name=='workflow_dispatch' && format('Manually build feature branch {0}', github.event.inputs.pull_request_id) || '' }}
 on:
   pull_request:
-    # Sequence of patterns matched against refs/heads
-    branches:    
-      - 'p/**'
   workflow_dispatch:
     inputs:
       pull_request_id:
@@ -14,20 +11,24 @@ on:
 jobs:
   pr_commented:
     # This job only runs for pull request comments
-    if: >-
-      github.event.inputs.pull_request_id ||
-      github.event.number
+    # if: >-
+    #   github.event.inputs.pull_request_id ||
+    #   github.event.number
+    if: ${{ startsWith(github.head_ref, 'p/') }}
     name: PR comment
     runs-on: ubuntu-latest
     env:
-      TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
+      TEXT: ${{ github.event.inputs.pull_request_id || format('Hello {0}', github.event.number) || 'default'}}-test
       PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
+      REF: ${{ github.ref}}
     steps:
       - name: debug
         run: |
           echo "env: ${EVENT}, pr: ${PRN}"
           echo "TXT: ${TEXT}"
           echo "PR: ${PR}"
+          echo "DE: ${DE}"
+          echo "REF: ${REF}"
         env:
           EVENT: ${{ github.event.inputs.pull_request_id }}
           PRN: ${{github.event.number}}
@@ -41,6 +42,14 @@ jobs:
               repo: context.repo.repo,
               body: '👋 Thanks for reporting! will run ${{env.TEXT}}'
             })
+  beh:
+    needs: [ pr_commented ]
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: say hello
+        run: |
+          echo say hello
+
 # on:
 #   # pull_request:
 #   issue_comment:
