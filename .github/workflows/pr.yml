@@ -18,7 +18,16 @@ jobs:
       TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
       PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
     steps:
+      - name: debug
+        run: |
+          echo "env: ${EVENT}, pr: ${PRN}"
+          echo "TXT: ${TEXT}"
+          echo "PR: ${PR}"
+        env:
+          EVENT: ${{ github.event.inputs.pull_request_id }}
+          PRN: ${{github.event.number}}
       - name: report
+        if: ${{ github.event.inputs.pull_request_id != '' }} || ${{ github.event.number != ''}}
         uses: actions/github-script@v6
         with:
           script: |
