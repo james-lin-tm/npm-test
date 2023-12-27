@@ -9,7 +9,7 @@ on:
       pull_request_id:
         description: The pull request id that you want to test
         type: string
-      continueOnTagErr:
+      run_automation:
         type: boolean
         required: false
         default: false
@@ -22,6 +22,7 @@ jobs:
       ref: ${{ github.head_ref }}
       event: ${{ github.event_name }}
       id: ${{github.event.number}}
+      run: ${{ github.event.inputs.run_automation }}
     steps:
       - name: debug
         run: |
@@ -29,6 +30,7 @@ jobs:
           echo "ref: ${ref}"
           echo "event: ${event}"
           echo "id: ${id}"
+          echo "run: ${run}"
 
   pr_commented:
     # This job only runs for pull request comments
