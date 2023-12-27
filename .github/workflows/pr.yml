@@ -18,7 +18,7 @@ jobs:
       status: ${{ github.event.review.state }}
       ref: ${{ github.head_ref }}
       event: ${{ github.event_name }}
-      id: $${{github.event.number}}
+      id: ${{github.event.number}}
     steps:
       - name: debug
         run: |
