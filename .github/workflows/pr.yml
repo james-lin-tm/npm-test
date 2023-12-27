@@ -11,18 +11,28 @@ on:
 jobs:
   pr_commented:
     # This job only runs for pull request comments
+    if: ${{ github.event.inputs.pull_request_id != '' }} || ${{ github.event.number != ''}}
     name: PR comment
     runs-on: ubuntu-latest
     env:
       TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
+      PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
     steps:
+      - name: debug
+        run: |
+          echo "env: ${EVENT}, pr: ${PRN}"
+          echo "TXT: ${TEXT}"
+          echo "PR: ${PR}"
+        env:
+          EVENT: ${{ github.event.inputs.pull_request_id }}
+          PRN: ${{github.event.number}}
       - name: report
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event.inputs.pull_request_id != '' }} || ${{ github.event.number != ''}}
         uses: actions/github-script@v6
         with:
           script: |
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: ${{env.PR}},
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: '👋 Thanks for reporting! will run ${{env.TEXT}}'
