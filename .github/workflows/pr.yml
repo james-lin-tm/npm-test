@@ -23,6 +23,7 @@ jobs:
       event: ${{ github.event_name }}
       id: ${{github.event.number}}
       run: ${{ github.event.inputs.run_automation }}
+      JSON: ${{ toJson(github) }}
     steps:
       - name: debug
         run: |
@@ -31,7 +32,7 @@ jobs:
           echo "event: ${event}"
           echo "id: ${id}"
           echo "run: ${run}"
-
+          echo "JSON: ${JSON}"
   pr_commented:
     # This job only runs for pull request comments
     # if: >-
@@ -69,7 +70,7 @@ jobs:
               issue_number: ${{env.PR}},
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}})'
+              body: '👋 Thanks \n for \\n reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}})'
             })
   beh:
     needs: [ pr_commented ]
