@@ -64,8 +64,7 @@ jobs:
               issue_number: ${{env.PR}},
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting! will run (${{env.PR}} + ${{env.TEXT}})[https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}]
-              (test)[../pull/${{env.PR}}]'
+              body: '👋 Thanks for reporting! will run (${{env.PR}} + ${{env.TEXT}})[https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}] (test)[../pullg/${{env.PR}}]'
             })
   beh:
     needs: [ pr_commented ]
