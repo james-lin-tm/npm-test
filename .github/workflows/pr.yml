@@ -1,6 +1,8 @@
 name: pr
 run-name: ${{ github.event_name=='workflow_dispatch' && format('Manually build feature branch {0}', github.event.inputs.pull_request_id) || '' }}
 on:
+  pull_request_review:
+    types: [submitted]
   pull_request:
   workflow_dispatch:
     inputs:
@@ -14,7 +16,10 @@ jobs:
     # if: >-
     #   github.event.inputs.pull_request_id ||
     #   github.event.number
-    if: ${{ startsWith(github.head_ref, 'p/') }}
+    if: >- 
+      startsWith(github.head_ref, 'p/') ||
+      github.event.review.state == 'APPROVED' ||
+      github.event_name=='workflow_dispatch'
     name: PR comment
     runs-on: ubuntu-latest
     env:
