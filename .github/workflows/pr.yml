@@ -11,12 +11,12 @@ on:
 jobs:
   pr_commented:
     # This job only runs for pull request comments
-    if: ${{ github.event.inputs.pull_request_id }} || ${{ github.event.pull_request.id}}
+    if: ${{ github.event.inputs.pull_request_id != ''}} || ${{ github.event.number != ''}}
     name: PR comment
     runs-on: ubuntu-latest
     env:
       TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
-      PR:  ${{ github.event.inputs.pull_request_id || github.event.pull_request.id}}
+      PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
     steps:
       - name: report
         if: github.event_name == 'pull_request'
