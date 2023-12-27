@@ -11,7 +11,9 @@ on:
 jobs:
   pr_commented:
     # This job only runs for pull request comments
-    if: ${{ github.event.inputs.pull_request_id != '' }} || ${{ github.event.number != ''}}
+    if: >-
+      github.event.inputs.pull_request_id ||
+      github.event.number
     name: PR comment
     runs-on: ubuntu-latest
     env:
@@ -27,7 +29,6 @@ jobs:
           EVENT: ${{ github.event.inputs.pull_request_id }}
           PRN: ${{github.event.number}}
       - name: report
-        if: ${{ github.event.inputs.pull_request_id != '' }} || ${{ github.event.number != ''}}
         uses: actions/github-script@v6
         with:
           script: |
