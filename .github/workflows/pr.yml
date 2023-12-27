@@ -2,6 +2,8 @@ name: pr
 run-name: ${{ github.event_name=='workflow_dispatch' && format('Manually build feature branch {0}', github.event.inputs.pull_request_id) || '' }}
 on:
   pull_request:
+    branches:
+      - 'p/**'
   workflow_dispatch:
     inputs:
       pull_request_id:
@@ -11,7 +13,9 @@ on:
 jobs:
   pr_commented:
     # This job only runs for pull request comments
-    if: ${{ github.event.inputs.pull_request_id != '' }} || ${{ github.event.number != ''}}
+    if: >-
+      github.event.inputs.pull_request_id ||
+      github.event.number
     name: PR comment
     runs-on: ubuntu-latest
     env:
@@ -27,7 +31,6 @@ jobs:
           EVENT: ${{ github.event.inputs.pull_request_id }}
           PRN: ${{github.event.number}}
       - name: report
-        if: ${{ github.event.inputs.pull_request_id != '' }} || ${{ github.event.number != ''}}
         uses: actions/github-script@v6
         with:
           script: |
