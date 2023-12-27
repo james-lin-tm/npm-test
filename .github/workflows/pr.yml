@@ -14,12 +14,12 @@ jobs:
     # if: >-
     #   github.event.inputs.pull_request_id ||
     #   github.event.number
+    if: ${{ startsWith(github.head_ref, 'p/') }}
     name: PR comment
     runs-on: ubuntu-latest
     env:
       TEXT: ${{ github.event.inputs.pull_request_id || format('Hello {0}', github.event.number) || 'default'}}-test
       PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
-      DE: ${{ toJson(github)}}
       REF: ${{ github.ref}}
     steps:
       - name: debug
@@ -42,6 +42,14 @@ jobs:
               repo: context.repo.repo,
               body: '👋 Thanks for reporting! will run ${{env.TEXT}}'
             })
+  beh:
+    needs: [ pr_commented ]
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: say hello
+        run: |
+          echo say hello
+
 # on:
 #   # pull_request:
 #   issue_comment:
