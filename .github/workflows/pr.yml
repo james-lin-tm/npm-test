@@ -2,8 +2,6 @@ name: pr
 run-name: ${{ github.event_name=='workflow_dispatch' && format('Manually build feature branch {0}', github.event.inputs.pull_request_id) || '' }}
 on:
   pull_request:
-    branches:
-      - 'p/**'
   workflow_dispatch:
     inputs:
       pull_request_id:
