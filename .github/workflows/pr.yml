@@ -40,20 +40,3 @@ jobs:
               repo: context.repo.repo,
               body: '👋 Thanks for reporting! will run ${{env.TEXT}}'
             })
-# on:
-#   # pull_request:
-#   issue_comment:
-# jobs:
-#   pr_commented:
-#     # if: ${{ github.event.issue.pull_request }}
-#     runs-on: [ubuntu-latest]
-#     steps:
-#       - name: debug
-#         run: |
-#           echo hello world
-#         env:
-#           EVENT: ${{ github.event.issue }}
-#       - name: say hello
-#         if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
-#         run: |
-#           echo say hello
