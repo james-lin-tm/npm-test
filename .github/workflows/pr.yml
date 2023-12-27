@@ -11,10 +11,12 @@ on:
 jobs:
   pr_commented:
     # This job only runs for pull request comments
+    if: ${{ github.event.inputs.pull_request_id }} || ${{ github.event.pull_request.id}}
     name: PR comment
     runs-on: ubuntu-latest
     env:
       TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
+      PR:  ${{ github.event.inputs.pull_request_id || github.event.pull_request.id}}
     steps:
       - name: report
         if: github.event_name == 'pull_request'
@@ -22,7 +24,7 @@ jobs:
         with:
           script: |
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: ${{env.PR}},
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: '👋 Thanks for reporting! will run ${{env.TEXT}}'
