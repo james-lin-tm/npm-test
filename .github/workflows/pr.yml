@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - 'p/**'
+      - 'test1'
   workflow_dispatch:
     inputs:
       pull_request_id:
