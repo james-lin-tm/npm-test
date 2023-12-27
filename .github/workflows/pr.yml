@@ -17,7 +17,7 @@ jobs:
     name: PR comment
     runs-on: ubuntu-latest
     env:
-      TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
+      TEXT: ${{ github.event.inputs.pull_request_id || format('Hello {0}', github.event.number) || 'default'}}-test
       PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
     steps:
       - name: debug
