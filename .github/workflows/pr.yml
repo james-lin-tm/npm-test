@@ -11,6 +11,20 @@ on:
         type: string
 
 jobs:
+  debug:
+    name: deubg
+    runs-on: ubuntu-latest
+    env:
+      status: ${{ github.event.review.state }}
+      ref: ${{ github.head_ref }}
+      event: ${{ github.event_name }}
+    steps:
+      - name: debug
+        run: |
+          echo "status: ${status}"
+          echo "ref: ${ref}"
+          echo "event: ${event}"
+
   pr_commented:
     # This job only runs for pull request comments
     # if: >-
