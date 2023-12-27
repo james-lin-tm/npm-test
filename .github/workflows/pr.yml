@@ -62,6 +62,16 @@ jobs:
         env:
           EVENT: ${{ github.event.inputs.pull_request_id }}
           PRN: ${{github.event.number}}
+      - name: Set branch name into env
+        id: set_branch_name
+        run: |
+          if [ ${{ github.event_name }} = "pull_request" ]
+          then
+            echo "branch_name=${{ github.ref }}" >> $GITHUB_OUTPUT
+          elif [ ${{ github.event_name }} = "workflow_dispatch" ]
+          then
+            echo "branch_name=${{ github.event.inputs.pull_request_id }}" >> $GITHUB_OUTPUT
+          fi
       - name: report
         uses: actions/github-script@v6
         with:
