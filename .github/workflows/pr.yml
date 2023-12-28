@@ -90,7 +90,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `👋 Thanks for reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}}) ${{steps.run_automation.outputs.automation}}
-              ${{ steps.run_automation.outputs.automation == 'true' && '🤖 Automation test is triggered.' || ''}}``
+              ${{ steps.run_automation.outputs.automation == 'true' && '🤖 Automation test is triggered.' || ''}}`
             })
   beh:
     needs: [ pr_commented ]
