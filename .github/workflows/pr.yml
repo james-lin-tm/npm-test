@@ -89,17 +89,9 @@ jobs:
               issue_number: ${{env.PR}},
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `👋 Thanks for reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}}) ${{steps.run_automation.outputs.automation}}
-              ${{ steps.run_automation.outputs.automation == 'true' && '🤖 Automation test is triggered.' || ''}}`
+              body: `👋 Thanks for reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}})
+              ${{ github.event.review.state == 'commented' && '🤖 Automation test is triggered.' || ''}}`
             })
-  beh:
-    needs: [ pr_commented ]
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: say hello
-        run: |
-          echo say hello
-
 # on:
 #   # pull_request:
 #   issue_comment:
