@@ -23,6 +23,8 @@ jobs:
       event: ${{ github.event_name }}
       id: ${{github.event.number}}
       run: ${{ github.event.inputs.run_automation }}
+      group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref }}
+      gp:  ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref }}
       JSON: ${{ toJson(github) }}
     steps:
       - name: debug
@@ -32,6 +34,8 @@ jobs:
           echo "event: ${event}"
           echo "id: ${id}"
           echo "run: ${run}"
+          echo "group: ${group}"
+          echo "gp: ${gp}"
           echo "JSON: ${JSON}"
   pr_commented:
     # This job only runs for pull request comments
@@ -41,13 +45,13 @@ jobs:
     if: >- 
       startsWith(github.head_ref, 'p/') ||
       github.event.review.state == 'APPROVED' ||
+      github.event.review.state == 'commented' ||
       github.event_name=='workflow_dispatch'
     name: PR comment
     runs-on: ubuntu-latest
     env:
       TEXT: ${{ github.event.inputs.pull_request_id || format('Hello {0}', github.event.number) || 'default'}}-test
       PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
-      group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref }}
       DE: ${{ toJson(github)}}
       REF: ${{ github.ref}}
     steps:
@@ -56,7 +60,6 @@ jobs:
           echo "env: ${EVENT}, pr: ${PRN}"
           echo "TXT: ${TEXT}"
           echo "PR: ${PR}"
-          echo "group: ${group}"
           echo "DE: ${DE}"
           echo "REF: ${REF}"
         env:
@@ -72,6 +75,12 @@ jobs:
           then
             echo "branch_name=${{ github.event.inputs.pull_request_id }}" >> $GITHUB_OUTPUT
           fi
+      - name: run automation
+        id: run_automation
+        run: |
+          if [ ${{ github.event.review.state }} = "commented" ]; then
+            echo "automation='\n will also trigger an automation'" >> $GITHUB_OUTPUT
+          fi
       - name: report
         uses: actions/github-script@v6
         with:
@@ -80,7 +89,8 @@ jobs:
               issue_number: ${{env.PR}},
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks \n for \\n reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}})'
+              body: `👋 Thanks for reporting! 
+              will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}}) ${{steps.run_automation.outputs.automation}}}}`
             })
   beh:
     needs: [ pr_commented ]
