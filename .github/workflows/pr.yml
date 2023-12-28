@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TEXT: ${{ github.event.inputs.pull_request_id || format('Hello {0}', github.event.number) || 'default'}}-test
-      PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
+      PR:  ${{ github.event.inputs.pull_request_id || github.event.number || github.event.pull_request.number}}
       DE: ${{ toJson(github)}}
       REF: ${{ github.ref}}
     steps:
@@ -89,7 +89,7 @@ jobs:
               issue_number: ${{env.PR}},
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}}) ${{steps.run_automation.outputs.automation}}'
+              body: `👋 Thanks for reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}}) ${{steps.run_automation.outputs.automation}}`
             })
   beh:
     needs: [ pr_commented ]
