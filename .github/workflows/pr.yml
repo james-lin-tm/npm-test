@@ -79,7 +79,7 @@ jobs:
         id: run_automation
         run: |
           if [ ${{ github.event.review.state }} = "commented" ]; then
-            echo "automation='\n will also trigger an automation'" >> $GITHUB_OUTPUT
+            echo "automation=\n will also trigger an automation" >> $GITHUB_OUTPUT
           fi
       - name: report
         uses: actions/github-script@v6
