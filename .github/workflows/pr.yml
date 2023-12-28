@@ -22,12 +22,14 @@ jobs:
     env:
       TEXT: ${{ github.event.inputs.pull_request_id || 'default'}}-test
       PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
+      group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref }}
     steps:
       - name: debug
         run: |
           echo "env: ${EVENT}, pr: ${PRN}"
           echo "TXT: ${TEXT}"
           echo "PR: ${PR}"
+          echo "group: ${group}"
         env:
           EVENT: ${{ github.event.inputs.pull_request_id }}
           PRN: ${{github.event.number}}
