@@ -1,25 +1,88 @@
 name: pr
-run-name: ${{ github.event_name=='workflow_dispatch' && format('Manually build feature branch {0}', github.event.inputs.pull_request_id) || '' }}
+run-name: ${{ github.workflow}} was triggered by ${{ github.event_name }}
 on:
+  pull_request_review:
+    types: [submitted]
   pull_request:
   workflow_dispatch:
     inputs:
       pull_request_id:
         description: The pull request id that you want to test
         type: string
-
+      run_automation:
+        type: boolean
+        required: false
+        default: false
 jobs:
+  debug:
+    name: deubg
+    runs-on: ubuntu-latest
+    env:
+      status: ${{ github.event.review.state }}
+      ref: ${{ github.head_ref }}
+      event: ${{ github.event_name }}
+      id: ${{github.event.number}}
+      run: ${{ github.event.inputs.run_automation }}
+      group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref }}
+      gp:  ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref }}
+      JSON: ${{ toJson(github) }}
+      PR:  ${{ github.event.inputs.pull_request_id || github.event.number || github.event.pull_request.number}}
+    steps:
+      - name: debug
+        run: |
+          echo "status: ${status}"
+          echo "ref: ${ref}"
+          echo "event: ${event}"
+          echo "id: ${id}"
+          echo "run: ${run}"
+          echo "group: ${group}"
+          echo "gp: ${gp}"
+          echo "PR: ${PR}"
+          echo "JSON: ${JSON}"
+      - name: context
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          retries: 3
+          retry-exempt-status-codes: 400,401
+          script: |
+            const query = `query($owner:String!, $name:String!, $pr: Int!) {
+              repository(owner:$owner, name:$name) {
+                pullRequest(number: $pr) {
+                  reviews(last: 10, states: APPROVED) {
+                    nodes {
+                      state
+                    }
+                  }
+                }
+              }
+            }`;
+            const variables = {
+              owner: context.repo.owner,
+              name: context.repo.repo,
+              pr: ${{ env.PR }}
+            }
+            const result = await github.graphql(query, variables)
+            console.log(result) 
+            console.log(result.repository.pullRequest.reviews.nodes.length)
+            console.log(result.repository.pullRequest.reviews.nodes.length > 0)
+       
   pr_commented:
     # This job only runs for pull request comments
     # if: >-
     #   github.event.inputs.pull_request_id ||
     #   github.event.number
-    if: ${{ startsWith(github.head_ref, 'p/') }}
+    if: >- 
+      startsWith(github.head_ref, 'p/') ||
+      github.event.review.state == 'APPROVED' ||
+      github.event.review.state == 'commented' ||
+      github.event_name=='workflow_dispatch'
     name: PR comment
     runs-on: ubuntu-latest
     env:
       TEXT: ${{ github.event.inputs.pull_request_id || format('Hello {0}', github.event.number) || 'default'}}-test
-      PR:  ${{ github.event.inputs.pull_request_id || github.event.number}}
+      PR:  ${{ github.event.inputs.pull_request_id || github.event.number || github.event.pull_request.number}}
+      DE: ${{ toJson(github)}}
       REF: ${{ github.ref}}
     steps:
       - name: debug
@@ -32,6 +95,22 @@ jobs:
         env:
           EVENT: ${{ github.event.inputs.pull_request_id }}
           PRN: ${{github.event.number}}
+      - name: Set branch name into env
+        id: set_branch_name
+        run: |
+          if [ ${{ github.event_name }} = "pull_request" ]
+          then
+            echo "branch_name=${{ github.ref }}" >> $GITHUB_OUTPUT
+          elif [ ${{ github.event_name }} = "workflow_dispatch" ]
+          then
+            echo "branch_name=${{ github.event.inputs.pull_request_id }}" >> $GITHUB_OUTPUT
+          fi
+      - name: run automation
+        id: run_automation
+        run: |
+          if [ ${{ github.event.review.state }} = "commented" ]; then
+            echo "automation=true" >> $GITHUB_OUTPUT
+          fi
       - name: report
         uses: actions/github-script@v6
         with:
@@ -40,16 +119,9 @@ jobs:
               issue_number: ${{env.PR}},
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting! will run ${{env.TEXT}}'
+              body: `👋 Thanks for reporting! will run [${{env.PR}} + ${{env.TEXT}}](https://github.com/james-lin-tm/npm-test/pull/${{env.PR}}) [test](../pull/${{env.PR}})
+              ${{ github.event.review.state == 'commented' && '🤖 Automation test is triggered.' || ''}}`
             })
-  beh:
-    needs: [ pr_commented ]
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: say hello
-        run: |
-          echo say hello
-
 # on:
 #   # pull_request:
 #   issue_comment:
