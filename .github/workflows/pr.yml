@@ -63,7 +63,9 @@ jobs:
               pr: ${{ env.PR }}
             }
             const result = await github.graphql(query, variables)
-            console.log(result)            
+            console.log(result) 
+            console.log(JSON.stringify(result,null,2))
+       
   pr_commented:
     # This job only runs for pull request comments
     # if: >-
