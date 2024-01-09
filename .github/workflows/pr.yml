@@ -37,6 +37,10 @@ jobs:
           echo "group: ${group}"
           echo "gp: ${gp}"
           echo "JSON: ${JSON}"
+      - name: context
+        uses: actions/github-script@v6
+        with:
+          script: console.log(context)
   pr_commented:
     # This job only runs for pull request comments
     # if: >-
