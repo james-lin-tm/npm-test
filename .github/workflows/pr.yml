@@ -1,5 +1,5 @@
 name: pr
-run-name: ${{ github.workflow}} triggered by ${{ github.event_name == 'pull_request' && format('PR \# /# _# "#{0} update', github.event.pull_request.number) || ''}}${{ github.event_name == 'pull_request_review' && format('PR /#{0} approved', github.event.pull_request.number) || ''}}${{ github.event_name == 'workflow_dispatch' && format('Manually build feature branch {0}', github.event.inputs.pull_request_id) || ''}}
+run-name: ${{ github.workflow}} triggered by ${{ github.event_name }}
 on:
   pull_request_review:
     types: [submitted]
