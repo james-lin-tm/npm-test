@@ -26,6 +26,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref }}
       gp:  ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref }}
       JSON: ${{ toJson(github) }}
+      PR:  ${{ github.event.inputs.pull_request_id || github.event.number || github.event.pull_request.number}}
     steps:
       - name: debug
         run: |
@@ -44,11 +45,23 @@ jobs:
           retries: 3
           retry-exempt-status-codes: 400,401
           script: |
-            github.rest.issues.get({
-              issue_number: context.issue.number,
+            const query = `query($owner:String!, $name:String!, $pr: Int!) {
+              repository(owner:$owner, name:$name){
+                reviews(last: 10, states: APPROVED) {
+                  nodes {
+                    id
+                  }
+                }
+              }
+            }`;
+            const variables = {
               owner: context.repo.owner,
-              repo: context.repo.repo,
-            })
+              name: context.repo.repo,
+              pr: ${{ env.PR }}
+            }
+            const result = await github.graphql(query, variables)
+            const data = JSON.parse(result)
+            console.log(data.data.repository.pullRequest.reviews.nodes.length)
   pr_commented:
     # This job only runs for pull request comments
     # if: >-
