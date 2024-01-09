@@ -37,8 +37,8 @@ jobs:
           echo "run: ${run}"
           echo "group: ${group}"
           echo "gp: ${gp}"
-          echo "JSON: ${JSON}"
           echo "PR: ${PR}"
+          echo "JSON: ${JSON}"
       - name: context
         uses: actions/github-script@v6
         with:
@@ -63,8 +63,7 @@ jobs:
               pr: ${{ env.PR }}
             }
             const result = await github.graphql(query, variables)
-            const data = JSON.parse(result)
-            console.log(data.data.repository.pullRequest.reviews.nodes.length)
+            console.log(result)            
   pr_commented:
     # This job only runs for pull request comments
     # if: >-
