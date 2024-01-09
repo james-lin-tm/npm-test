@@ -38,6 +38,7 @@ jobs:
           echo "group: ${group}"
           echo "gp: ${gp}"
           echo "JSON: ${JSON}"
+          echo "PR: ${PR}"
       - name: context
         uses: actions/github-script@v6
         with:
@@ -46,10 +47,12 @@ jobs:
           retry-exempt-status-codes: 400,401
           script: |
             const query = `query($owner:String!, $name:String!, $pr: Int!) {
-              repository(owner:$owner, name:$name){
-                reviews(last: 10, states: APPROVED) {
-                  nodes {
-                    id
+              repository(owner:$owner, name:$name) {
+                pullRequest(number: $pr) {
+                  reviews(last: 10, states: APPROVED) {
+                    nodes {
+                      state
+                    }
                   }
                 }
               }
