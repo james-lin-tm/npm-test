@@ -1,5 +1,5 @@
 name: pr
-run-name: ${{ github.workflow}} triggered by ${{ github.event_name }}
+run-name: ${{ github.workflow}} was triggered by ${{ github.event_name }}
 on:
   pull_request_review:
     types: [submitted]
