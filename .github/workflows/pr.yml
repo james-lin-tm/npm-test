@@ -64,7 +64,8 @@ jobs:
             }
             const result = await github.graphql(query, variables)
             console.log(result) 
-            console.log(JSON.stringify(result,null,2))
+            console.log(result.data.repository.pullRequest.reviews.nodes.length)
+            console.log(result.data.repository.pullRequest.reviews.nodes.length > 0)
        
   pr_commented:
     # This job only runs for pull request comments
