@@ -40,7 +40,15 @@ jobs:
       - name: context
         uses: actions/github-script@v6
         with:
-          script: console.log(context)
+          result-encoding: string
+          retries: 3
+          retry-exempt-status-codes: 400,401
+          script: |
+            github.rest.issues.get({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
   pr_commented:
     # This job only runs for pull request comments
     # if: >-
